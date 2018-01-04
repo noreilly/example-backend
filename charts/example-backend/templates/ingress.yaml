@@ -1,0 +1,22 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: v1
+kind: Ingress
+metadata:
+{{- if .Values.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.ingress.annotations | indent 4 }}
+{{- end }}
+  name: {{ template "chart.fullname" . }}
+spec:
+  rules:
+  - host: {{ .Values.ingress.hostname | quote }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ template "chart.fullname" . }}
+          servicePort: {{ .Values.service.externalPort }}
+{{- if .Values.Master.Ingress.TLS }}
+  tls:
+{{ toYaml .Values.ingress.TLS | indent 4 }}
+{{- end -}}
+{{- end }}
